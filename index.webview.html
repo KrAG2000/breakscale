@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Breakscale</title>
+    <!--
+      The host rewrites this placeholder into a real policy at load time,
+      because a webview's CSP has to name a nonce and a `vscode-webview://`
+      host that only exist once the panel does. Left as a marker rather
+      than omitted, so a build that reaches a browser fails visibly instead
+      of running with no policy at all.
+    -->
+    <meta http-equiv="Content-Security-Policy" content="__CSP__" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/webview/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,79 @@
+{
+  "name": "breakscale",
+  "displayName": "Breakscale",
+  "description": "Build a system, load it until it breaks, and watch why. A system design simulator.",
+  "version": "0.1.0",
+  "publisher": "xevrion",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xevrion/breakscale.git",
+    "directory": "extension"
+  },
+  "homepage": "https://breakscale.tech",
+  "bugs": {
+    "url": "https://github.com/xevrion/breakscale/issues"
+  },
+  "categories": [
+    "Visualization",
+    "Education",
+    "Other"
+  ],
+  "keywords": [
+    "system design",
+    "distributed systems",
+    "simulator",
+    "architecture",
+    "interview"
+  ],
+  "icon": "assets/icon.png",
+  "galleryBanner": {
+    "color": "#0f1117",
+    "theme": "dark"
+  },
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "main": "./dist/extension.js",
+  "activationEvents": [],
+  "contributes": {
+    "commands": [
+      {
+        "command": "breakscale.open",
+        "title": "Open Breakscale",
+        "category": "Breakscale",
+        "icon": "$(graph)"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "breakscale",
+          "title": "Breakscale",
+          "icon": "assets/activity-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "breakscale": [
+        {
+          "id": "breakscale.launch",
+          "name": "Breakscale",
+          "type": "webview"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "build": "esbuild src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node --target=node20 --minify",
+    "watch": "esbuild src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node --target=node20 --sourcemap --watch",
+    "package": "vsce package --no-dependencies",
+    "publish": "vsce publish --no-dependencies"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "@types/vscode": "^1.90.0",
+    "@vscode/vsce": "^3.2.0",
+    "esbuild": "^0.24.0"
+  }
+}

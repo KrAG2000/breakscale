@@ -1,0 +1,20 @@
+# What does NOT go in the .vsix.
+#
+# Everything here is either a build input or a development dependency, and
+# the package is something people download over a connection they did not
+# choose. What ships is the bundled host, the webview build, and the two
+# icons.
+
+src/**
+node_modules/**
+tsconfig.json
+.vscodeignore
+bun.lock
+
+# esbuild bundles the host into dist/extension.js, so the map would be the
+# only thing in the package nobody can act on.
+dist/**/*.map
+
+# A previous package, left in the directory by `vsce package`. Without this
+# every release carries the one before it, and the file doubles each time.
+*.vsix

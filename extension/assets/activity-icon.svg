@@ -1,0 +1,25 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  width="24"
+  height="24"
+  fill="currentColor"
+  role="img"
+  aria-label="Breakscale"
+>
+  <title>Breakscale</title>
+  <!--
+    The same mark as the favicon, reduced to one colour.
+
+    The activity bar tints its icons itself, to say which is active and to
+    follow the theme, so anything with its own colours fights that and a
+    multi-colour version would be legible in exactly one theme. What
+    survives the reduction is the silhouette: a track with the thumb pushed
+    to the far end, which is the gesture the product is about.
+
+    Drawn on a 24 grid rather than scaled from the 32 one, because the
+    activity bar renders at 24 and a scaled path lands on half pixels.
+  -->
+  <rect x="2" y="9.5" width="15" height="5" rx="2.5" opacity="0.55" />
+  <circle cx="18" cy="12" r="5" />
+</svg>

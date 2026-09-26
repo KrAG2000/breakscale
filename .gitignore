@@ -23,3 +23,10 @@ scratch-*.ts
 .wrangler/
 worker/.wrangler/
 .dev.vars*
+
+# The extension's build output. media/ is the webview bundle, dist/ is the
+# bundled host, and the .vsix is the two of them zipped: all three are
+# rebuilt by `bun run build:extension` and none belongs in the history.
+extension/media/
+extension/dist/
+extension/*.vsix

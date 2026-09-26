@@ -1,0 +1,68 @@
+name: Publish extension
+
+# A tag rather than a push to main: the web app deploys on every merge, and
+# the editor extension should not. Publishing is a thing people install and
+# keep, so it happens when a version is declared rather than whenever a
+# README changes.
+on:
+  push:
+    tags: ['extension-v*']
+  # Building without publishing, to check a release would work before
+  # tagging one. The publish step is skipped unless a tag triggered it.
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with:
+          bun-version: latest
+
+      - name: Install
+        run: bun install --frozen-lockfile
+
+      - name: Install extension dependencies
+        run: bun install --frozen-lockfile
+        working-directory: extension
+
+      # The same gates main runs. A release that skipped them would be the
+      # one build nobody checked, which is exactly the wrong one to ship to
+      # people who install rather than refresh.
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: Test
+        run: bun run test
+
+      - name: Build extension
+        run: bun run build:extension
+
+      - name: Package
+        run: bunx vsce package --no-dependencies
+        working-directory: extension
+
+      # Uploaded whether or not this publishes, so a dispatch run leaves
+      # something to install and try by hand.
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: vsix
+          path: extension/*.vsix
+
+      - name: Publish
+        if: startsWith(github.ref, 'refs/tags/extension-v')
+        run: bunx vsce publish --no-dependencies --pat "$VSCE_PAT"
+        working-directory: extension
+        env:
+          # A Marketplace token with publish rights. Scoped to this step
+          # rather than the job, so no other step can read it.
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
