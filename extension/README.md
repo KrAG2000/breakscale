@@ -11,6 +11,8 @@ animated to look plausible.
 This extension runs the whole simulator in an editor panel, so the thing you reach for while
 thinking about an architecture is in the same window as the code you are thinking about.
 
+![Breakscale running in a VS Code panel, showing the WhatsApp reconstruction under load](docs/screenshot.png)
+
 ## Using it
 
 Open the command palette and run **Open Breakscale**. The panel opens beside your editor and
