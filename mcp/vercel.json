@@ -1,0 +1,14 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "cd .. && bun install --frozen-lockfile && cd mcp && bun install --frozen-lockfile",
+  "buildCommand": "bun run build",
+  "outputDirectory": "public",
+  "rewrites": [{ "source": "/mcp", "destination": "/api/mcp" }],
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "https://github.com/xevrion/breakscale/tree/main/mcp",
+      "permanent": false
+    }
+  ]
+}

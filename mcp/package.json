@@ -33,7 +33,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "build": "vite build && bun scripts/readme.ts && bun build src/main.ts --outfile dist/index.js --target node --banner \"#!/usr/bin/env node\" --define 'import.meta.env={\"VITE_SHARE_API\":\"https://links.breakscale.tech\"}'",
+    "build": "vite build && bun scripts/readme.ts && bun build src/main.ts --outfile dist/index.js --target node --banner \"#!/usr/bin/env node\" --define 'import.meta.env={\"VITE_SHARE_API\":\"https://links.breakscale.tech\"}' && bun build src/vercel.ts --outfile dist/vercel.js --target node --define 'import.meta.env={\"VITE_SHARE_API\":\"https://links.breakscale.tech\"}'",
     "serve": "node dist/index.js",
     "serve:stdio": "node dist/index.js --stdio",
     "typecheck": "tsc --noEmit -p .",

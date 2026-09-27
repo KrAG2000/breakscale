@@ -61,8 +61,9 @@ function rejected(errors: string[]): CallToolResult {
   );
 }
 
-export function createServer(): McpServer {
+export function createServer({ budgetMs }: { budgetMs?: number } = {}): McpServer {
   const server = new McpServer({ name: 'Breakscale', version: '0.1.0' });
+  const runOptions = { ...DEFAULT_RUN, budgetMs: budgetMs ?? DEFAULT_RUN.budgetMs };
 
   server.registerTool(
     'read_me',
@@ -90,8 +91,8 @@ Use it to draw an architecture, to turn code into a design, or to change a desig
       if (!built.ok) return rejected(built.errors);
       const { topology } = built;
 
-      const run = runDesign(topology, DEFAULT_RUN);
-      const lines = [describeRun(topology, run, DEFAULT_RUN)];
+      const run = runDesign(topology, runOptions);
+      const lines = [describeRun(topology, run, runOptions)];
       try {
         // Said as an instruction because the link is the one part of this
         // the user needs verbatim: it opens the design in their browser,
