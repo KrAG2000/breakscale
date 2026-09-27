@@ -7,6 +7,10 @@
     {
       "source": "/glossary",
       "destination": "/glossary.html"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/privacy.html"
     }
   ],
   "headers": [
