@@ -13,27 +13,22 @@ In assistants that support [MCP Apps](https://modelcontextprotocol.io/docs/exten
 
 ## Connect your assistant
 
-All you need is [Node](https://nodejs.org) 20 or newer. Every assistant starts the server the same way, and there is nothing to clone or build:
+There are two ways in, and both give you the same four tools.
 
-```
-npx -y breakscale-mcp --stdio
-```
+- **The hosted server**, `https://mcp.breakscale.tech/mcp`. Nothing to install and nothing to run: add the URL and ask. This is the easiest way, and the only one claude.ai can use.
+- **On your own machine**, with `npx -y breakscale-mcp --stdio`. It needs [Node](https://nodejs.org) 20 or newer, and the simulation then runs on your computer instead of ours.
 
 Which assistants draw the canvas in the chat, according to the [MCP client matrix](https://modelcontextprotocol.io/extensions/client-matrix):
 
-| Canvas in the chat                                  | Numbers and a link only                               |
-| --------------------------------------------------- | ----------------------------------------------------- |
-| VS Code with Copilot, Cursor, Claude Desktop, Goose | Claude Code, Codex, Gemini CLI, Windsurf / Devin, Zed |
+| Canvas in the chat                                             | Numbers and a link only                               |
+| -------------------------------------------------------------- | ----------------------------------------------------- |
+| claude.ai, Claude Desktop, VS Code with Copilot, Cursor, Goose | Claude Code, Codex, Gemini CLI, Windsurf / Devin, Zed |
 
-### Claude Code
+### claude.ai and Claude Desktop
 
-```bash
-claude mcp add --scope user breakscale -- npx -y breakscale-mcp --stdio
-```
+Go to **Customize > Connectors > Add custom connector**, name it `Breakscale`, and enter `https://mcp.breakscale.tech/mcp`. There is no sign-in, so leave the OAuth fields empty. On a Team or Enterprise plan an owner adds it first under **Organization settings > Connectors**.
 
-`--scope user` makes it available in every project, which is what you want for "read my code and turn it into a design". Without it the server is only added for the folder you ran the command in. Run `/mcp` inside Claude Code to check it connected, and `claude mcp remove breakscale --scope user` to take it out again.
-
-To share it with everyone working in one repo instead, put this in `.mcp.json` at the repo root:
+To run it locally in Claude Desktop instead, open **Settings > Developer > Edit Config**, add this, and restart the app completely:
 
 ```json
 {
@@ -41,6 +36,33 @@ To share it with everyone working in one repo instead, put this in `.mcp.json` a
     "breakscale": {
       "command": "npx",
       "args": ["-y", "breakscale-mcp", "--stdio"]
+    }
+  }
+}
+```
+
+### Claude Code
+
+```bash
+claude mcp add --transport http --scope user breakscale https://mcp.breakscale.tech/mcp
+```
+
+or, to run it locally:
+
+```bash
+claude mcp add --scope user breakscale -- npx -y breakscale-mcp --stdio
+```
+
+`--scope user` makes it available in every project, which is what you want for "read my code and turn it into a design". Without it the server is only added for the folder you ran the command in. Run `/mcp` inside Claude Code to check it connected, and `claude mcp remove breakscale --scope user` to take it out again.
+
+To share it with everyone working in one repo, put this in `.mcp.json` at the repo root:
+
+```json
+{
+  "mcpServers": {
+    "breakscale": {
+      "type": "http",
+      "url": "https://mcp.breakscale.tech/mcp"
     }
   }
 }
@@ -51,24 +73,23 @@ To share it with everyone working in one repo instead, put this in `.mcp.json` a
 From a terminal:
 
 ```bash
-code --add-mcp '{"name":"breakscale","type":"stdio","command":"npx","args":["-y","breakscale-mcp","--stdio"]}'
+code --add-mcp '{"name":"breakscale","type":"http","url":"https://mcp.breakscale.tech/mcp"}'
 ```
 
-Or run **MCP: Add Server** from the command palette, choose a command (stdio) server, enter `npx -y breakscale-mcp --stdio`, and pick Global to have it everywhere. For one workspace only, put this in `.vscode/mcp.json` (the key is `servers`, not `mcpServers`):
+Or run **MCP: Add Server** from the command palette, choose HTTP, enter the URL, and pick Global to have it everywhere. For one workspace only, put this in `.vscode/mcp.json` (the key is `servers`, not `mcpServers`):
 
 ```json
 {
   "servers": {
     "breakscale": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "breakscale-mcp", "--stdio"]
+      "type": "http",
+      "url": "https://mcp.breakscale.tech/mcp"
     }
   }
 }
 ```
 
-Then ask in Copilot Chat in agent mode. The canvas appears inline when the setting `chat.mcp.apps.enabled` is on.
+To run it locally, use `"type": "stdio", "command": "npx", "args": ["-y", "breakscale-mcp", "--stdio"]` in place of the type and URL. Then ask in Copilot Chat in agent mode. The canvas appears inline when the setting `chat.mcp.apps.enabled` is on.
 
 ### Cursor
 
@@ -78,57 +99,42 @@ Put this in `~/.cursor/mcp.json` for every project, or `.cursor/mcp.json` for on
 {
   "mcpServers": {
     "breakscale": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "breakscale-mcp", "--stdio"]
+      "url": "https://mcp.breakscale.tech/mcp"
     }
   }
 }
 ```
 
-### Claude Desktop
-
-Open **Settings > Developer > Edit Config**, add the server, and restart the app completely:
-
-```json
-{
-  "mcpServers": {
-    "breakscale": {
-      "command": "npx",
-      "args": ["-y", "breakscale-mcp", "--stdio"]
-    }
-  }
-}
-```
+To run it locally, use `"type": "stdio", "command": "npx", "args": ["-y", "breakscale-mcp", "--stdio"]` in place of the URL.
 
 ### Codex CLI
 
 ```bash
-codex mcp add breakscale -- npx -y breakscale-mcp --stdio
+codex mcp add breakscale --url https://mcp.breakscale.tech/mcp
 ```
 
-or in `~/.codex/config.toml`:
+or, to run it locally, `codex mcp add breakscale -- npx -y breakscale-mcp --stdio`. Both can also go in `~/.codex/config.toml`:
 
 ```toml
 [mcp_servers.breakscale]
-command = "npx"
-args = ["-y", "breakscale-mcp", "--stdio"]
+url = "https://mcp.breakscale.tech/mcp"
 ```
 
 ### Gemini CLI
 
-In `~/.gemini/settings.json`, or `.gemini/settings.json` for one project:
+In `~/.gemini/settings.json`, or `.gemini/settings.json` for one project. Gemini reads `httpUrl` as the hosted kind of server, where plain `url` means an older transport:
 
 ```json
 {
   "mcpServers": {
     "breakscale": {
-      "command": "npx",
-      "args": ["-y", "breakscale-mcp", "--stdio"]
+      "httpUrl": "https://mcp.breakscale.tech/mcp"
     }
   }
 }
 ```
+
+To run it locally, use `"command": "npx", "args": ["-y", "breakscale-mcp", "--stdio"]` in place of `httpUrl`.
 
 ### Windsurf / Devin Desktop
 
@@ -144,23 +150,23 @@ Extensions > Add custom extension, type Standard IO, command `npx -y breakscale-
 
 ### Zed
 
-In `settings.json`, or Settings > AI > MCP Servers > Add Local Server:
+In `settings.json`, or Settings > AI > MCP Servers:
 
 ```json
 {
   "context_servers": {
     "breakscale": {
-      "command": "npx",
-      "args": ["-y", "breakscale-mcp", "--stdio"],
-      "env": {}
+      "url": "https://mcp.breakscale.tech/mcp"
     }
   }
 }
 ```
 
+To run it locally, use `"command": "npx", "args": ["-y", "breakscale-mcp", "--stdio"], "env": {}` in place of the URL.
+
 ### Anything else
 
-Anything that speaks MCP can run `npx -y breakscale-mcp --stdio`. Without `--stdio` it serves Streamable HTTP at `http://localhost:3001/mcp` instead: `PORT` changes the port, `HOST` the address it binds to, and `ALLOWED_HOSTS` adds hostnames it will answer to besides localhost.
+Anything that speaks MCP over HTTP can use `https://mcp.breakscale.tech/mcp`, and anything that starts servers itself can run `npx -y breakscale-mcp --stdio`. Without `--stdio` the npm package serves Streamable HTTP at `http://localhost:3001/mcp` instead: `PORT` changes the port, `HOST` the address it binds to, and `ALLOWED_HOSTS` adds hostnames it will answer to besides localhost.
 
 ## Things to try
 

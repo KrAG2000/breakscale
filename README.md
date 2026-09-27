@@ -89,23 +89,27 @@ the editor and the website.
 
 ### With your AI assistant
 
-Breakscale is also an [MCP server](mcp/README.md), so Claude Code, Copilot, Cursor, Codex and
-other assistants can use it for you. Point one at a repo and ask it to turn the architecture into
-a design, or just describe a system, and it builds the design, runs it through the same engine, and
+Breakscale is also an [MCP server](mcp/README.md), so Claude, Copilot, Cursor, Codex and other
+assistants can use it for you. Point one at a repo and ask it to turn the architecture into a
+design, or just describe a system, and it builds the design, runs it through the same engine, and
 comes back with measured numbers and a breakscale.tech link that opens it.
+
+The server is hosted at `https://mcp.breakscale.tech/mcp`, so there is nothing to install. In
+claude.ai, add that URL under **Customize > Connectors > Add custom connector**. Elsewhere:
 
 ```bash
 # Claude Code
-claude mcp add --scope user breakscale -- npx -y breakscale-mcp --stdio
+claude mcp add --transport http --scope user breakscale https://mcp.breakscale.tech/mcp
 
 # VS Code
-code --add-mcp '{"name":"breakscale","type":"stdio","command":"npx","args":["-y","breakscale-mcp","--stdio"]}'
+code --add-mcp '{"name":"breakscale","type":"http","url":"https://mcp.breakscale.tech/mcp"}'
 ```
 
-Any other assistant runs the same `npx -y breakscale-mcp --stdio`, and all it needs is Node 20.
-In assistants that support [MCP Apps](https://modelcontextprotocol.io/docs/extensions/apps), such
-as VS Code and Cursor, the design also opens as a live canvas right in the chat, and anything you
-change there goes back to the assistant, so its next edit starts from what you are looking at. The
+To run it on your own machine instead, any assistant can start `npx -y breakscale-mcp --stdio`
+with Node 20. In assistants that support
+[MCP Apps](https://modelcontextprotocol.io/docs/extensions/apps), such as claude.ai, VS Code and
+Cursor, the design also opens as a live canvas right in the chat, and anything you change there
+goes back to the assistant, so its next edit starts from what you are looking at. The
 [MCP guide](mcp/README.md) has setup for every client and some prompts worth trying.
 
 A few things to ask once it is connected:
