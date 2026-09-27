@@ -478,6 +478,13 @@
      this, and vh would size it against a window taller than the visible
      one. Harmless on a desktop, where the two are identical. */
   --strip-h: clamp(196px, 26dvh, 260px);
+  /* The height the strip is actually DRAWN at, which is what everything that
+     clears it has to read. --strip-h is the chosen height (the clamp above,
+     or a dragged size written inline); a short window caps it further below.
+     When only the strip's own box took that cap, the ledger, the zoom
+     cluster and the toggle still cleared the uncapped height and floated
+     a band of empty canvas above the strip. */
+  --strip-shown: var(--strip-h);
 }
 
 /* --------------------------------------------------------------------------
@@ -669,7 +676,7 @@
 }
 
 .app-body.has-metrics .stage-toggle-metrics {
-  bottom: calc(var(--strip-h) + var(--sp-3) * 2);
+  bottom: calc(var(--strip-shown) + var(--sp-3) * 2);
 }
 
 /* The ledger sits to the right of the metrics toggle (32px + two gaps, the
@@ -681,13 +688,13 @@
 
 .app-body.has-metrics .cv-ledger,
 .app-body.has-metrics .cv-zoom {
-  bottom: calc(var(--strip-h) + var(--sp-3) * 2);
+  bottom: calc(var(--strip-shown) + var(--sp-3) * 2);
 }
 
 /* The format bar rides the same lift, one row higher so it clears the
    ledger and the zoom cluster it shares the foot of the canvas with. */
 .app-body.has-metrics .cv-format {
-  bottom: calc(var(--strip-h) + var(--sp-3) * 2 + 32px + var(--sp-3));
+  bottom: calc(var(--strip-shown) + var(--sp-3) * 2 + 32px + var(--sp-3));
 }
 
 .app-body.has-inspector .cv-zoom,
@@ -746,7 +753,7 @@
 }
 
 .app-body.has-metrics .stage-safe {
-  bottom: var(--strip-h);
+  bottom: var(--strip-shown);
 }
 
 /* The strip: pinned to the stage's foot, --strip-h tall (rationale on the
@@ -761,7 +768,7 @@
   left: var(--sp-3);
   right: var(--sp-3);
   bottom: var(--sp-3);
-  height: var(--strip-h);
+  height: var(--strip-shown);
   flex-direction: column;
   z-index: 9;
   /* The charts reflow against the STRIP's own width, which is the stage
@@ -974,9 +981,11 @@
 
 @media (max-height: 720px) {
   /* Same reasoning as the width override above: a MAX, not a replacement,
-     because the dragged value is inline and would otherwise win. */
-  .app-slot-bottom {
-    height: min(var(--strip-h), clamp(150px, 24vh, 196px));
+     because the dragged value is inline and would otherwise win. Set on the
+     token rather than on the strip's box, so the controls that clear the
+     strip move down with it. */
+  .app-body {
+    --strip-shown: min(var(--strip-h), clamp(150px, 24vh, 196px));
   }
 }
 
