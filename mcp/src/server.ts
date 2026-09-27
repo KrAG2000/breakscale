@@ -70,7 +70,7 @@ export function createServer({ budgetMs }: { budgetMs?: number } = {}): McpServe
     {
       title: 'Read the design format',
       description:
-        'Returns the Breakscale design format: every component, its settings and defaults, how requests route, and how to map real code onto components. Call this once before create_view.',
+        'Returns the Breakscale design format that create_view takes: every component, its settings and defaults, how requests route, and how real code maps onto components.',
       annotations: { title: 'Read the design format', readOnlyHint: true },
     },
     async (): Promise<CallToolResult> => text(readme as string),
@@ -81,8 +81,8 @@ export function createServer({ budgetMs }: { budgetMs?: number } = {}): McpServe
     'create_view',
     {
       title: 'Show design',
-      description: `Shows a system design on a live Breakscale canvas the user can run, load and edit, and simulates it so you get real latency, throughput and failure numbers back.
-Use it to draw an architecture, to turn code into a design, or to change a design. Call read_me first for the format.`,
+      description:
+        'Shows a system design on a live Breakscale canvas the user can run, load and edit, and simulates it, returning measured latency, throughput and failure numbers and a breakscale.tech link to the design. Takes a design in the format read_me describes.',
       inputSchema: z.object(design),
       annotations: { title: 'Show design', readOnlyHint: true },
       _meta: { ui: { resourceUri: RESOURCE_URI } },
@@ -95,12 +95,12 @@ Use it to draw an architecture, to turn code into a design, or to change a desig
       const run = runDesign(topology, runOptions);
       const lines = [describeRun(topology, run, runOptions)];
       try {
-        // Said as an instruction because the link is the one part of this
-        // the user needs verbatim: it opens the design in their browser,
-        // and a model left to summarise tends to drop it.
+        // Said as what the link does, not as an instruction to pass it on:
+        // the connector directory rejects text that tells the model how to
+        // behave, and in testing models relayed the link either way.
         lines.push(
           '',
-          `Link to the design (give this to the user as is; it opens on breakscale.tech): ${await buildShareUrl(topology, APP_URL)}`,
+          `Link to the design, which opens it on breakscale.tech: ${await buildShareUrl(topology, APP_URL)}`,
         );
       } catch (err) {
         if (!(err instanceof ShareLinkTooLargeError)) throw err;
@@ -111,8 +111,8 @@ Use it to draw an architecture, to turn code into a design, or to change a desig
       }
       lines.push(
         '',
-        'To change it, call create_view again with the whole updated design, keeping the node ids. ' +
-          'If the user edits it on the canvas, their version will appear in your context.',
+        'A changed design can be shown by passing the whole updated design to create_view; keeping the node ids keeps the layout stable. ' +
+          'Edits the user makes on the canvas are reported back as context.',
       );
       // Text only. The view rebuilds the topology from the tool's input
       // rather than reading it from here: some hosts (Claude Code) show the
@@ -127,7 +127,7 @@ Use it to draw an architecture, to turn code into a design, or to change a desig
     {
       title: 'Export a design file',
       description:
-        'Returns a design as the text of a .breakscale file, which the Breakscale app and its VS Code extension can open with Settings, Open a file. Takes the same input as create_view. Write the result to a file ending in .breakscale.',
+        'Returns a design as the text of a .breakscale file, which the Breakscale app and its VS Code extension open with Settings, Open a file. Takes the same input as create_view.',
       inputSchema: z.object(design),
       annotations: { title: 'Export a design file', readOnlyHint: true },
     },
@@ -143,7 +143,7 @@ Use it to draw an architecture, to turn code into a design, or to change a desig
     {
       title: 'Open a share link',
       description:
-        'Reads a Breakscale share link (a breakscale.tech URL) and returns the design in it, ready to change and pass to create_view.',
+        'Reads a Breakscale share link (a breakscale.tech URL) and returns the design in it, in the format create_view takes.',
       inputSchema: z.object({ link: z.string().describe('The whole share link') }),
       annotations: {
         title: 'Open a share link',
