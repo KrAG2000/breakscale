@@ -68,6 +68,7 @@ export function createServer({ budgetMs }: { budgetMs?: number } = {}): McpServe
   server.registerTool(
     'read_me',
     {
+      title: 'Read the design format',
       description:
         'Returns the Breakscale design format: every component, its settings and defaults, how requests route, and how to map real code onto components. Call this once before create_view.',
       annotations: { readOnlyHint: true },
@@ -124,6 +125,7 @@ Use it to draw an architecture, to turn code into a design, or to change a desig
   server.registerTool(
     'export_design',
     {
+      title: 'Export a design file',
       description:
         'Returns a design as the text of a .breakscale file, which the Breakscale app and its VS Code extension can open with Settings, Open a file. Takes the same input as create_view. Write the result to a file ending in .breakscale.',
       inputSchema: z.object(design),
@@ -139,6 +141,7 @@ Use it to draw an architecture, to turn code into a design, or to change a desig
   server.registerTool(
     'open_design',
     {
+      title: 'Open a share link',
       description:
         'Reads a Breakscale share link (a breakscale.tech URL) and returns the design in it, ready to change and pass to create_view.',
       inputSchema: z.object({ link: z.string().describe('The whole share link') }),
