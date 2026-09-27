@@ -40,6 +40,42 @@ function applyContext(ctx: McpUiHostContext | undefined): void {
   document.documentElement.dataset.display = mode;
 }
 
+/** Lucide's maximize-2, inline so the button needs no icon package of its own. */
+const EXPAND_ICON =
+  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>';
+
+/**
+ * A button that opens the view full screen, where the host supports it.
+ *
+ * Inline, the view is a chat column wide, and a design of five or six tiers
+ * cannot fit it at the zoom where nodes still show their numbers, so the
+ * whole design is one click away instead. It takes the slot of the undo and
+ * redo island, which matters less in a view this size; full screen has room
+ * for both, and the canvas refits itself when the frame grows.
+ */
+function mountExpand(): void {
+  const modes = host.getHostContext()?.availableDisplayModes ?? [];
+  if (!modes.includes('fullscreen')) return;
+  document.documentElement.dataset.canExpand = '';
+
+  const island = document.createElement('div');
+  island.className = 'app-island view-expand';
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'btn btn-icon';
+  button.title = 'Open full screen';
+  button.setAttribute('aria-label', 'Open full screen');
+  button.innerHTML = EXPAND_ICON;
+  button.addEventListener('click', () => {
+    void host
+      .requestDisplayMode({ mode: 'fullscreen' })
+      .then(() => applyContext(host.getHostContext()))
+      .catch(() => {});
+  });
+  island.append(button);
+  document.body.append(island);
+}
+
 function clientRps(t: Topology): number {
   return t.nodes.reduce(
     (sum, n) => (n.kind === 'client' ? sum + n.config.rps : sum),
@@ -200,6 +236,7 @@ async function start(root: HTMLElement): Promise<void> {
       <App />
     </StrictMode>,
   );
+  mountExpand();
 }
 
 const root = document.getElementById('root');

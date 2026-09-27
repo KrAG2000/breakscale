@@ -38,6 +38,33 @@ html:not([data-display='fullscreen']) .app-brand {
   display: none;
 }
 
+/*
+ * The full screen button, where the host offers full screen. It takes the
+ * top-left slot of the undo and redo island inline, as an island of the same
+ * family, and the bar starts after it. Full screen gives the slot back.
+ */
+/* Two gaps in, not one: at chat widths (<=1000px) the bar carries a
+   padding of --sp-3 inside its own --sp-3 offset (App.css), so that is
+   where its islands actually start, and this one has to line up with them. */
+.view-expand {
+  position: fixed;
+  top: calc(var(--sp-3) * 2);
+  left: calc(var(--sp-3) * 2);
+  z-index: 41;
+}
+
+html[data-can-expand]:not([data-display='fullscreen']) .app-island-brand {
+  display: none;
+}
+
+html[data-can-expand]:not([data-display='fullscreen']) .app-bar {
+  left: calc(var(--sp-3) * 2 + 56px);
+}
+
+html[data-display='fullscreen'] .view-expand {
+  display: none;
+}
+
 .view-error {
   padding: var(--sp-4);
   color: var(--danger);
