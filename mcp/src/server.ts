@@ -71,7 +71,7 @@ export function createServer({ budgetMs }: { budgetMs?: number } = {}): McpServe
       title: 'Read the design format',
       description:
         'Returns the Breakscale design format: every component, its settings and defaults, how requests route, and how to map real code onto components. Call this once before create_view.',
-      annotations: { readOnlyHint: true },
+      annotations: { title: 'Read the design format', readOnlyHint: true },
     },
     async (): Promise<CallToolResult> => text(readme as string),
   );
@@ -84,7 +84,7 @@ export function createServer({ budgetMs }: { budgetMs?: number } = {}): McpServe
       description: `Shows a system design on a live Breakscale canvas the user can run, load and edit, and simulates it so you get real latency, throughput and failure numbers back.
 Use it to draw an architecture, to turn code into a design, or to change a design. Call read_me first for the format.`,
       inputSchema: z.object(design),
-      annotations: { readOnlyHint: true },
+      annotations: { title: 'Show design', readOnlyHint: true },
       _meta: { ui: { resourceUri: RESOURCE_URI } },
     },
     async (args): Promise<CallToolResult> => {
@@ -129,7 +129,7 @@ Use it to draw an architecture, to turn code into a design, or to change a desig
       description:
         'Returns a design as the text of a .breakscale file, which the Breakscale app and its VS Code extension can open with Settings, Open a file. Takes the same input as create_view. Write the result to a file ending in .breakscale.',
       inputSchema: z.object(design),
-      annotations: { readOnlyHint: true },
+      annotations: { title: 'Export a design file', readOnlyHint: true },
     },
     async (args): Promise<CallToolResult> => {
       const built = buildTopology(args);
@@ -145,7 +145,11 @@ Use it to draw an architecture, to turn code into a design, or to change a desig
       description:
         'Reads a Breakscale share link (a breakscale.tech URL) and returns the design in it, ready to change and pass to create_view.',
       inputSchema: z.object({ link: z.string().describe('The whole share link') }),
-      annotations: { readOnlyHint: true, openWorldHint: true },
+      annotations: {
+        title: 'Open a share link',
+        readOnlyHint: true,
+        openWorldHint: true,
+      },
     },
     async ({ link }): Promise<CallToolResult> => {
       let url: URL;
