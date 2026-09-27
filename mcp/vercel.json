@@ -9,12 +9,5 @@
       "source": "/mcp",
       "destination": "/api/mcp"
     }
-  ],
-  "redirects": [
-    {
-      "source": "/",
-      "destination": "https://github.com/xevrion/breakscale/tree/main/mcp",
-      "permanent": false
-    }
   ]
 }
