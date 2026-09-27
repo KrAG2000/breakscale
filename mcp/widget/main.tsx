@@ -24,6 +24,7 @@ import './widget.css';
 
 const SESSION_KEY = 'breakscale.session.v1';
 const PREFS_KEY = 'breakscale.preferences.v1';
+const LAYOUT_KEY = 'breakscale.layout.v1';
 /** Dragging a node writes on every frame; the model needs the result, not the path. */
 const SYNC_DELAY_MS = 1500;
 
@@ -183,6 +184,11 @@ async function start(root: HTMLElement): Promise<void> {
         presetId: null,
       }),
       ...(theme ? { [PREFS_KEY]: JSON.stringify({ theme }) } : {}),
+      // A chat column is about 750px at any screen size, and the component
+      // library and the charts strip each take a third of that. Someone
+      // looking at a design they asked for wants the design, so both start
+      // closed; the toggles to open them are still on the canvas.
+      [LAYOUT_KEY]: JSON.stringify({ library: false, metrics: false }),
     },
     data.topology,
   );

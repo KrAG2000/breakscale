@@ -21,6 +21,23 @@ html[data-display='fullscreen'] body {
   height: 100%;
 }
 
+/*
+ * The top bar in a chat column.
+ *
+ * Inline, the view is about 750px wide on any screen, which is below the
+ * width the bar's three islands need: the load control is squeezed until
+ * its run buttons slide under the menu island. Three things a chat does not
+ * need there go, and the load control gets the room: the GitHub link and
+ * Share (the assistant has already given the link to the design), and the
+ * wordmark (the host's own frame header names Breakscale right above it).
+ * Fullscreen has the width for everything and keeps all three.
+ */
+html:not([data-display='fullscreen']) .app-source-link,
+html:not([data-display='fullscreen']) .app-share-btn,
+html:not([data-display='fullscreen']) .app-brand {
+  display: none;
+}
+
 .view-error {
   padding: var(--sp-4);
   color: var(--danger);
