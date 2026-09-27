@@ -229,17 +229,6 @@ React, TypeScript and Vite, with Lucide for icons. The canvas is hand-rolled SVG
 drawn directly rather than pulled from a charting library, which keeps the bundle small and the
 rendering predictable.
 
-## Thanks
-
-Breakscale is supported by [Workers IO](https://workers.io), our title sponsor, and by these
-companies, who provide their services to the project for free:
-
-<p>
-  <a href="https://vercel.com/oss"><img alt="Vercel OSS Program" src="https://vercel.com/oss/program-badge.svg" /></a>
-</p>
-
-[Mintlify](https://mintlify.com) hosts the [documentation](https://docs.breakscale.tech).
-
 ## Star history
 
 <a href="https://star-history.com/#xevrion/breakscale&Date">
