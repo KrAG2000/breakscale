@@ -1304,7 +1304,31 @@ export class Engine implements BehaviourCtx {
   private onClientArrival(state: NodeState): void {
     this.scheduleArrival(state.id);
     if (this.effectiveRps(state) <= 0) return;
-    if (this.liveRequests >= MAX_LIVE_REQUESTS) return;
+
+    /*
+     * Past the live-request ceiling the request is still OFFERED, and
+     * saying so is the whole point. Returning silently here left every
+     * rate reading zero while the design was maximally overloaded: a
+     * client sending a million a second reported "offered 0.0/s, served
+     * 0.0/s, 0.0% failed" beside a service pinned at 100% busy, which
+     * reads as an idle system rather than a drowning one.
+     *
+     * So it is counted and then shed. The ceiling is this engine
+     * protecting itself rather than anything the design did, but a
+     * request the system could not take IS a shed from the reader's
+     * side, and the alternative is a meter that lies at exactly the
+     * moment it matters most.
+     */
+    if (this.liveRequests >= MAX_LIVE_REQUESTS) {
+      this.totalRequests++;
+      this.sysOffered.add(this.now, 1);
+      state.arrivals.add(this.now, 1);
+      state.sheds.add(this.now, 1);
+      state.totalFailed++;
+      this.failures.shed++;
+      this.sysFailed.add(this.now, 1);
+      return;
+    }
 
     const root = this.acquireReq();
     root.nodeId = state.id;
