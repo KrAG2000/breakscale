@@ -36,7 +36,17 @@ export interface RunResult {
   simulatedMs: number;
 }
 
-const STEP_MS = 100;
+/*
+ * One frame, the same step the app drives the engine at.
+ *
+ * It cannot be coarser than a rate bucket. The engine's trailing window is
+ * ten 100ms buckets and `rate()` excludes the one still filling, so
+ * stepping a whole 100ms per call lands every reading on that partial
+ * bucket and every rate comes back 0.0/s. That is how a design offered a
+ * million a second reported "offered 0.0/s, served 0.0/s, 0.0% failed"
+ * beside a component pinned at 100% busy.
+ */
+const STEP_MS = 1000 / 60;
 
 export function runDesign(
   topology: Topology,
@@ -67,6 +77,7 @@ const REASON_WORDS: Record<FailureReason, string> = {
   'conn-refused': 'were refused a websocket connection',
   unauthorized: 'failed authentication at the API gateway',
   'bulkhead-full': 'were refused by a full bulkhead',
+  'acquire-timeout': 'gave up waiting for a pool slot',
   deprioritized: 'were dropped by a load shedder',
 };
 
