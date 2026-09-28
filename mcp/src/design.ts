@@ -4,6 +4,7 @@ import { sanitizeAnnotations } from '../../src/sim/annotations';
 import { behaviourFor } from '../../src/sim/behaviour';
 import { defaultConfig } from '../../src/sim/presets';
 import {
+  BULKHEAD_MODES,
   TRAFFIC_PATTERNS,
   type NodeConfig,
   type NodeKind,
@@ -57,6 +58,7 @@ const FIELDS: ReadonlySet<string> = new Set(WIRE_FIELDS);
  */
 const WORD_FIELDS: Readonly<Record<string, readonly string[]>> = {
   traffic: TRAFFIC_PATTERNS,
+  bulkheadMode: BULKHEAD_MODES,
 };
 
 function isRecord(v: unknown): v is Record<string, unknown> {

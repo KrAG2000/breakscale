@@ -1,13 +1,28 @@
 import { describe, expect, it } from 'vitest';
 import { Engine } from './engine';
 import { makeNode } from './presets';
-import type { Topology } from './types';
+import { BULKHEAD_MODES, type BulkheadMode, type Topology } from './types';
 
 function snapshotAfter(topology: Topology, seconds: number) {
   const engine = new Engine(topology, 7);
   for (let i = 0; i < seconds * 60; i += 1) engine.advance(1000 / 60);
   return engine.snapshot();
 }
+
+describe('the mode list', () => {
+  /*
+   * The union and the array cannot be generated from one another, so a mode
+   * added to the type without being added here compiles fine and is then
+   * rejected at runtime by anything that validates against the list. That
+   * is not hypothetical: the MCP's own validator reads this array, and
+   * `bulkheadMode` reaching it before the array existed is what broke
+   * every design carrying one.
+   */
+  it('has an entry for every mode the type admits', () => {
+    const exhaustive: Record<BulkheadMode, true> = { reject: true, wait: true };
+    expect([...BULKHEAD_MODES].sort()).toEqual(Object.keys(exhaustive).sort());
+  });
+});
 
 describe('bulkhead acquire mode', () => {
   it('waits for a slot, then times out the acquire without occupying that slot', () => {

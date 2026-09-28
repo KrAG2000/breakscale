@@ -439,7 +439,7 @@ export interface NodeConfig {
    */
   bulkheadMax?: number;
   /** Bulkhead only: reject immediately, or wait for a pool slot to open. */
-  bulkheadMode?: 'reject' | 'wait';
+  bulkheadMode?: BulkheadMode;
   /** Bulkhead only: waiting acquire requests allowed before shedding. */
   acquireQueueMax?: number;
   /** Bulkhead only: longest a request may wait to acquire a pool slot, in ms. */
@@ -1238,6 +1238,24 @@ export const TRAFFIC_PATTERNS: readonly TrafficPattern[] = [
   'spike',
   'diurnal',
 ];
+
+/**
+ * How a bulkhead answers a request it has no free slot for.
+ *
+ * `reject` fails it there and then, which is what a bulkhead has always
+ * done. `wait` holds it until a slot frees or the acquire timeout fires,
+ * which is how a client connection pool behaves and is the whole point of
+ * modelling one.
+ */
+export type BulkheadMode = 'reject' | 'wait';
+
+/**
+ * The same list at runtime, for the validators that cannot read a type.
+ * Written out beside the type rather than derived from it, for the reason
+ * TRAFFIC_PATTERNS is: a union and an array cannot be generated from one
+ * another in TypeScript, so the pairing is checked by a test instead.
+ */
+export const BULKHEAD_MODES: readonly BulkheadMode[] = ['reject', 'wait'];
 
 /**
  * Seconds for one cycle when a client does not say.
