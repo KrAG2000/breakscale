@@ -40,6 +40,18 @@ jobs:
       - name: Typecheck
         run: bun run typecheck
 
+      # The MCP has its own tsconfig and is not referenced by the root one,
+      # so `bun run typecheck` above never reads it. It went unchecked long
+      # enough for a missing failure-reason wording to reach main and only
+      # surface when somebody built the package by hand.
+      - name: Install the MCP
+        run: bun install --frozen-lockfile
+        working-directory: mcp
+
+      - name: Typecheck the MCP
+        run: bun run typecheck
+        working-directory: mcp
+
       - name: Lint
         run: bun run lint
 
