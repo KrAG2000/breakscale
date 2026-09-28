@@ -41,11 +41,34 @@ const edge = z.looseObject({
   control: z.boolean().optional(),
 });
 
+/*
+ * Both shapes a design arrives in.
+ *
+ * The plain one is what a caller writes by hand. The wrapped one is an
+ * exported `.breakscale` file, which carries the design under `topology`
+ * beside an app name and a version, and which read_me says is accepted as
+ * is. `buildTopology` has always unwrapped it; the schema was what turned
+ * it away, so handing back an export and passing it straight in failed on
+ * `nodes: expected array` before any of that ran.
+ *
+ * `nodes` is optional here rather than required in either branch, because
+ * the schema's job is only to get the request through to the validator.
+ * A design with no nodes is then refused by `buildTopology`, which says
+ * which node or edge is wrong instead of naming a JSON path.
+ */
 const design = {
   name: z.string().optional().describe('A short name for the design'),
-  nodes: z.array(node),
+  nodes: z.array(node).optional(),
   edges: z.array(edge).optional(),
   annotations: z.array(z.unknown()).optional(),
+  topology: z
+    .looseObject({
+      nodes: z.array(node).optional(),
+      edges: z.array(edge).optional(),
+      annotations: z.array(z.unknown()).optional(),
+    })
+    .optional()
+    .describe('An exported .breakscale file can be passed in as it is'),
 };
 
 function text(body: string, isError = false): CallToolResult {
