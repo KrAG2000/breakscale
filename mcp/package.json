@@ -1,6 +1,6 @@
 {
   "name": "breakscale-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Breakscale as an MCP server: an AI assistant builds a system design, runs it through a real simulation, and shows it on a live canvas",
   "license": "MIT",
   "author": "xevrion",
