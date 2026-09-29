@@ -41,6 +41,12 @@
   <sub><a href="https://workers.io">Workers IO</a> (YC F26) sponsors Breakscale. Simulation environments for verifying mission-critical software.</sub>
 </p>
 
+<p align="center">
+  <a href="https://vercel.com/open-source-program">
+    <img alt="Vercel OSS Program" src="https://vercel.com/oss/program-badge-2026.svg" height="56" />
+  </a>
+</p>
+
 <div align="center">
   <img src="docs/retry-storm.png" alt="The Retry Storm example at 100 requests a second: the database is 99.9% busy while goodput is zero" width="100%" />
   <p align="center">
